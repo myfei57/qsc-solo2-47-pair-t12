@@ -75,3 +75,19 @@ class OutOfRangeError(ContractError):
 
 class UnknownSensorError(ContractError):
     """Raised when a moisture sensor is addressed before it is mapped."""
+
+
+class UnknownRecipeError(ContractError):
+    """Raised when a size recipe is addressed before it is defined."""
+
+
+class RetiredRecipeError(ContractError):
+    """Raised when a retired size recipe is selected or used to make up glue."""
+
+
+class ConcentrationDriftError(ContractError):
+    """Raised when a make up is ordered without a sustained concentration drift."""
+
+
+class ConcentrationUnstableError(ContractError):
+    """Raised when a changeover closes the steady stage before the band holds."""

@@ -191,6 +191,55 @@ def glue_concentration(console: Any, request: Request) -> Response:
     )
 
 
+def glue_recipe_define(console: Any, request: Request) -> Response:
+    body = request.body()
+    return json_response(
+        console.services.glue.define_recipe(
+            body["grade"],
+            body["target"],
+            body.get("tolerance", 1.0),
+            body.get("makeup_factor", 1.0),
+            body["confirmation_id"],
+        )
+    )
+
+
+def glue_recipe_retire(console: Any, request: Request) -> Response:
+    body = request.body()
+    return json_response(
+        console.services.glue.retire_recipe(body["grade"], body["confirmation_id"])
+    )
+
+
+def glue_changeover_begin(console: Any, request: Request) -> Response:
+    body = request.body()
+    return json_response(
+        console.services.glue.begin_changeover(body["grade"], body["confirmation_id"])
+    )
+
+
+def glue_changeover_lift(console: Any, request: Request) -> Response:
+    return json_response(console.services.glue.changeover_lift())
+
+
+def glue_changeover_stop(console: Any, request: Request) -> Response:
+    return json_response(console.services.glue.changeover_stop())
+
+
+def glue_changeover_steady(console: Any, request: Request) -> Response:
+    return json_response(console.services.glue.changeover_steady())
+
+
+def glue_concentration_observe(console: Any, request: Request) -> Response:
+    return json_response(
+        console.services.glue.observe_concentration(request.body()["reading"])
+    )
+
+
+def glue_makeup(console: Any, request: Request) -> Response:
+    return json_response(console.services.glue.makeup())
+
+
 def cal_speed(console: Any, request: Request) -> Response:
     body = request.body()
     return json_response(console.services.cal.set_speed(body["speed"], body["target"]))

@@ -5,6 +5,8 @@ from typing import Any, Callable
 from ..errors import (
     BatchNotPendingError,
     CommitOrderError,
+    ConcentrationDriftError,
+    ConcentrationUnstableError,
     ConfirmationMismatchError,
     ContractError,
     DuplicateBatchError,
@@ -15,11 +17,13 @@ from ..errors import (
     OutOfRangeError,
     OutOfSequenceError,
     PreGateError,
+    RetiredRecipeError,
     RollbackError,
     StaleArtifactError,
     UnknownBatchError,
     UnknownConfirmationError,
     UnknownKeyError,
+    UnknownRecipeError,
     UnknownSensorError,
     UnknownStageError,
 )
@@ -39,6 +43,9 @@ CONFLICT = (
     StaleArtifactError,
     RollbackError,
     CommitOrderError,
+    ConcentrationDriftError,
+    ConcentrationUnstableError,
+    RetiredRecipeError,
 )
 MALFORMED = (OutOfRangeError, UnknownStageError, ConfirmationMismatchError)
 MISSING = (
@@ -47,6 +54,7 @@ MISSING = (
     UnknownBatchError,
     BatchNotPendingError,
     UnknownSensorError,
+    UnknownRecipeError,
 )
 
 ROUTES: tuple[tuple[str, str, Handler], ...] = (
@@ -108,6 +116,18 @@ ROUTES: tuple[tuple[str, str, Handler], ...] = (
     ("POST", "/api/glue/stop", operations.glue_stop),
     ("POST", "/api/glue/alarm", operations.glue_alarm),
     ("POST", "/api/glue/concentration", operations.glue_concentration),
+    ("GET", "/api/glue/recipes", handlers.glue_recipes),
+    ("POST", "/api/glue/recipe", operations.glue_recipe_define),
+    ("POST", "/api/glue/recipe/retire", operations.glue_recipe_retire),
+    ("GET", "/api/glue/changeover", handlers.glue_changeover),
+    ("POST", "/api/glue/changeover/begin", operations.glue_changeover_begin),
+    ("POST", "/api/glue/changeover/lift", operations.glue_changeover_lift),
+    ("POST", "/api/glue/changeover/stop", operations.glue_changeover_stop),
+    ("POST", "/api/glue/changeover/steady", operations.glue_changeover_steady),
+    ("POST", "/api/glue/concentration/observe", operations.glue_concentration_observe),
+    ("GET", "/api/glue/concentration/window", handlers.glue_concentration_window),
+    ("POST", "/api/glue/makeup", operations.glue_makeup),
+    ("GET", "/api/glue/makeup", handlers.glue_makeup),
     ("GET", "/api/cal/state", handlers.cal_state),
     ("GET", "/api/cal/model", handlers.cal_model),
     ("POST", "/api/cal/speed", operations.cal_speed),

@@ -278,6 +278,43 @@ def glue_state(console: Any, request: Request) -> Response:
     return json_response(console.services.glue.view().to_dict())
 
 
+def glue_recipes(console: Any, request: Request) -> Response:
+    glue = console.services.glue
+    grade = request.param("grade")
+    if grade is not None:
+        return json_response(glue.recipe(grade).to_row())
+    active = glue.active_recipe()
+    return json_response(
+        {
+            "active": glue.active_grade(),
+            "active_recipe": active.to_row() if active is not None else None,
+            "recipes": list(glue.recipes()),
+        }
+    )
+
+
+def glue_changeover(console: Any, request: Request) -> Response:
+    return json_response(console.services.glue.changeover())
+
+
+def glue_concentration_window(console: Any, request: Request) -> Response:
+    reading = request.param("reading")
+    glue = console.services.glue
+    state = glue.concentration_state(None if reading is None else float(reading))
+    state["makeup_total"] = glue.makeup_total()
+    return json_response(state)
+
+
+def glue_makeup(console: Any, request: Request) -> Response:
+    glue = console.services.glue
+    return json_response(
+        {
+            "records": list(glue.makeup_history()),
+            "total": glue.makeup_total(),
+        }
+    )
+
+
 def glue_model(console: Any, request: Request) -> Response:
     glue = console.services.glue
     reading = request.number("reading", glue.concentration())

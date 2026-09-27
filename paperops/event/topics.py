@@ -16,6 +16,10 @@ TOPIC_GLUE_ROLL_LIFTED = "glue.roll.lifted"
 TOPIC_GLUE_PUMP_STOPPED = "glue.pump.stopped"
 TOPIC_GLUE_ALARM = "glue.alarm.changed"
 TOPIC_GLUE_CONC_SET = "glue.concentration.set"
+TOPIC_GLUE_RECIPE = "glue.recipe.changed"
+TOPIC_GLUE_RECIPE_RETIRED = "glue.recipe.retired"
+TOPIC_GLUE_CHANGEOVER = "glue.changeover.changed"
+TOPIC_GLUE_MAKEUP = "glue.makeup.added"
 
 TOPIC_CAL_NIP = "cal.nip.changed"
 TOPIC_CAL_SPEED = "cal.speed.changed"
@@ -47,6 +51,10 @@ ALL_TOPICS: tuple[str, ...] = (
     TOPIC_GLUE_PUMP_STOPPED,
     TOPIC_GLUE_ALARM,
     TOPIC_GLUE_CONC_SET,
+    TOPIC_GLUE_RECIPE,
+    TOPIC_GLUE_RECIPE_RETIRED,
+    TOPIC_GLUE_CHANGEOVER,
+    TOPIC_GLUE_MAKEUP,
     TOPIC_CAL_NIP,
     TOPIC_CAL_SPEED,
     TOPIC_REEL_PROCEDURE,

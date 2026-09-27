@@ -92,6 +92,7 @@ class StateService:
             topics.TOPIC_STEAM_BASELINE_SET,
             topics.TOPIC_STEAM_BASELINE_INVALIDATED,
             topics.TOPIC_GLUE_CONC_SET,
+            topics.TOPIC_GLUE_RECIPE,
             topics.TOPIC_WATER_MAP,
         ):
             self._bus.subscribe(topic, self._expire_snapshot)

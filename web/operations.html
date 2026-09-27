@@ -51,6 +51,25 @@
     <button onclick="post('/api/glue/alarm', {on: false})">清报警</button>
   </section>
   <section>
+    <h1>配方与换品种</h1>
+    <label>品种 <input id="rpGrade" value="A4"></label>
+    <label>目标浓度 <input id="rpTarget" value="8"></label>
+    <label>带宽 <input id="rpTol" value="0.5"></label>
+    <label>补胶系数 <input id="rpFactor" value="2"></label>
+    <button onclick="defineRecipe()">定义配方</button>
+    <button onclick="retireRecipe()">作废配方</button>
+    <hr>
+    <button onclick="changeBegin()">开始换品种</button>
+    <button onclick="post('/api/glue/changeover/lift', {})">①抬辊</button>
+    <button onclick="post('/api/glue/changeover/stop', {})">②停泵</button>
+    <label>浓度读数 <input id="rpReading" value="8"></label>
+    <button onclick="observeReading()">记录浓度</button>
+    <button onclick="post('/api/glue/changeover/steady', {})">③浓度稳定确认</button>
+    <button onclick="post('/api/glue/makeup', {})">按配方补胶</button>
+    <button onclick="refreshRecipe()">刷新状态</button>
+    <pre id="rpState"></pre>
+  </section>
+  <section>
     <h1>压光与卷取</h1>
     <label>车速 <input id="calSpeed" value="900"></label>
     <label>压区压力 <input id="nip" value="60"></label>
@@ -77,11 +96,51 @@
   </section>
   <script>
     const num = (id) => Number(document.getElementById(id).value);
+    const val = (id) => document.getElementById(id).value;
     const out = document.getElementById("out");
     async function post(path, body) {
       const response = await fetch(path, {method: "POST", body: JSON.stringify(body)});
-      out.textContent = path + " -> " + response.status + "\n" + JSON.stringify(await response.json(), null, 2);
+      const payload = await response.json();
+      out.textContent = path + " -> " + response.status + "\n" + JSON.stringify(payload, null, 2);
+      return [response, payload];
     }
+    async function confirm(name) {
+      const [, payload] = await post("/api/confirmation", {name, subject: "glue", ttl_ticks: 20});
+      return payload.confirmation_id;
+    }
+    async function defineRecipe() {
+      const confirmation_id = await confirm("glue.recipe");
+      await post("/api/glue/recipe", {
+        grade: val("rpGrade"), target: num("rpTarget"), tolerance: num("rpTol"),
+        makeup_factor: num("rpFactor"), confirmation_id,
+      });
+      refreshRecipe();
+    }
+    async function retireRecipe() {
+      const confirmation_id = await confirm("glue.recipe");
+      await post("/api/glue/recipe/retire", {grade: val("rpGrade"), confirmation_id});
+      refreshRecipe();
+    }
+    async function changeBegin() {
+      const confirmation_id = await confirm("glue.recipe");
+      await post("/api/glue/changeover/begin", {grade: val("rpGrade"), confirmation_id});
+      refreshRecipe();
+    }
+    async function observeReading() {
+      await post("/api/glue/concentration/observe", {reading: num("rpReading")});
+      refreshRecipe();
+    }
+    async function refreshRecipe() {
+      const [state, recipes, window, makeup] = await Promise.all([
+        fetch("/api/glue/changeover").then((r) => r.json()),
+        fetch("/api/glue/recipes").then((r) => r.json()),
+        fetch("/api/glue/concentration/window").then((r) => r.json()),
+        fetch("/api/glue/makeup").then((r) => r.json()),
+      ]);
+      document.getElementById("rpState").textContent = JSON.stringify(
+        {active: recipes.active, changeover: state, window, makeup_total: makeup.total}, null, 2);
+    }
+    refreshRecipe();
   </script>
 </body>
 </html>
