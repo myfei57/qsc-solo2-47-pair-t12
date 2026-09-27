@@ -13,6 +13,7 @@ from .dry import DryService
 from .event import EventBus
 from .glue import GlueService
 from .press import PressService
+from .recipe import RecipeService
 from .reel import ReelService
 from .state import StateService
 from .steam import SteamService
@@ -38,6 +39,7 @@ class Services:
     dry: DryService
     steam: SteamService
     glue: GlueService
+    recipe: RecipeService
     cal: CalService
     reel: ReelService
     broke: BrokeService
@@ -52,6 +54,7 @@ class Services:
         self.steam.reload()
         self.dry.reload()
         self.glue.reload()
+        self.recipe.reload()
         self.cal.reload()
         self.reel.reload()
         self.broke.reload()
@@ -72,6 +75,7 @@ def build_services(config: Config) -> Services:
     steam = SteamService(journal, bus, clock, generations, confirmations)
     dry = DryService(journal, bus, clock, generations, confirmations)
     glue = GlueService(journal, bus, clock, generations, confirmations)
+    recipe = RecipeService(journal, bus, clock, generations, confirmations, glue)
     cal = CalService(journal, bus, clock)
     reel = ReelService(journal, bus, clock)
     broke = BrokeService(journal, bus, clock, batches)
@@ -88,6 +92,7 @@ def build_services(config: Config) -> Services:
             "dry": dry,
             "steam": steam,
             "glue": glue,
+            "recipe": recipe,
             "cal": cal,
             "reel": reel,
             "broke": broke,
@@ -115,6 +120,7 @@ def build_services(config: Config) -> Services:
         dry=dry,
         steam=steam,
         glue=glue,
+        recipe=recipe,
         cal=cal,
         reel=reel,
         broke=broke,

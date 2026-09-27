@@ -17,6 +17,11 @@ GLUE_PUMP = "glue/pump"
 GLUE_ALARM = "glue/alarm"
 GLUE_CONC = "glue/concentration"
 
+RECIPE_PREFIX = "recipe/variety/"
+RECIPE_SWITCH = "recipe/switch"
+RECIPE_ACTIVE = "recipe/active"
+RECIPE_CORRECTION_PREFIX = "recipe/correction/"
+
 CAL_NIP = "cal/nip"
 CAL_SPEED = "cal/speed"
 
@@ -51,3 +56,11 @@ def artifact_key(kind: str, name: str) -> str:
 
 def batch_key(batch_id: str) -> str:
     return BATCH_PREFIX + batch_id
+
+
+def recipe_key(variety: str) -> str:
+    return RECIPE_PREFIX + variety
+
+
+def recipe_correction_key(seq: int) -> str:
+    return f"{RECIPE_CORRECTION_PREFIX}{seq:06d}"

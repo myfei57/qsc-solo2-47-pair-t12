@@ -191,6 +191,55 @@ def glue_concentration(console: Any, request: Request) -> Response:
     )
 
 
+def recipe_publish(console: Any, request: Request) -> Response:
+    body = request.body()
+    return json_response(
+        console.services.recipe.publish(
+            body["variety"],
+            body["concentration"],
+            float(body.get("tolerance", 1.0)),
+            body["confirmation_id"],
+        )
+    )
+
+
+def recipe_begin(console: Any, request: Request) -> Response:
+    body = request.body()
+    generation = body.get("generation")
+    return json_response(
+        console.services.recipe.begin_switch(
+            body["variety"],
+            None if generation is None else int(generation),
+        )
+    )
+
+
+def recipe_lift(console: Any, request: Request) -> Response:
+    return json_response(console.services.recipe.switch_lift())
+
+
+def recipe_stop(console: Any, request: Request) -> Response:
+    return json_response(console.services.recipe.switch_stop())
+
+
+def recipe_stabilize(console: Any, request: Request) -> Response:
+    body = request.body()
+    return json_response(
+        console.services.recipe.switch_stabilize(body["reading"], body["confirmation_id"])
+    )
+
+
+def recipe_correct(console: Any, request: Request) -> Response:
+    body = request.body()
+    return json_response(
+        console.services.recipe.correct(
+            body["reading"],
+            float(body.get("volume", 1000.0)),
+            float(body.get("stock", 20.0)),
+        )
+    )
+
+
 def cal_speed(console: Any, request: Request) -> Response:
     body = request.body()
     return json_response(console.services.cal.set_speed(body["speed"], body["target"]))

@@ -278,6 +278,17 @@ def glue_state(console: Any, request: Request) -> Response:
     return json_response(console.services.glue.view().to_dict())
 
 
+def recipe_state(console: Any, request: Request) -> Response:
+    recipe = console.services.recipe
+    return json_response(
+        {
+            **recipe.view().to_dict(),
+            "recipes": [item.to_row() for item in recipe.recipes()],
+            "corrections_log": [dict(row) for row in recipe.corrections()],
+        }
+    )
+
+
 def glue_model(console: Any, request: Request) -> Response:
     glue = console.services.glue
     reading = request.number("reading", glue.concentration())

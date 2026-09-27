@@ -20,6 +20,7 @@ from ..errors import (
     UnknownBatchError,
     UnknownConfirmationError,
     UnknownKeyError,
+    UnknownRecipeError,
     UnknownSensorError,
     UnknownStageError,
 )
@@ -47,6 +48,7 @@ MISSING = (
     UnknownBatchError,
     BatchNotPendingError,
     UnknownSensorError,
+    UnknownRecipeError,
 )
 
 ROUTES: tuple[tuple[str, str, Handler], ...] = (
@@ -108,6 +110,13 @@ ROUTES: tuple[tuple[str, str, Handler], ...] = (
     ("POST", "/api/glue/stop", operations.glue_stop),
     ("POST", "/api/glue/alarm", operations.glue_alarm),
     ("POST", "/api/glue/concentration", operations.glue_concentration),
+    ("GET", "/api/recipe/state", handlers.recipe_state),
+    ("POST", "/api/recipe/publish", operations.recipe_publish),
+    ("POST", "/api/recipe/begin", operations.recipe_begin),
+    ("POST", "/api/recipe/lift", operations.recipe_lift),
+    ("POST", "/api/recipe/stop", operations.recipe_stop),
+    ("POST", "/api/recipe/stabilize", operations.recipe_stabilize),
+    ("POST", "/api/recipe/correct", operations.recipe_correct),
     ("GET", "/api/cal/state", handlers.cal_state),
     ("GET", "/api/cal/model", handlers.cal_model),
     ("POST", "/api/cal/speed", operations.cal_speed),

@@ -15,6 +15,7 @@ def test_view_aggregates_every_subsystem(services):
         "dry",
         "steam",
         "glue",
+        "recipe",
         "cal",
         "reel",
         "broke",

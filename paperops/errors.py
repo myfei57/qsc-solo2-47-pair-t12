@@ -75,3 +75,7 @@ class OutOfRangeError(ContractError):
 
 class UnknownSensorError(ContractError):
     """Raised when a moisture sensor is addressed before it is mapped."""
+
+
+class UnknownRecipeError(ContractError):
+    """Raised when a variety is addressed before any recipe is published for it."""
